@@ -1,6 +1,17 @@
-﻿@{
+﻿@model IEnumerable<StoreItem>
+@{
     ViewData["Title"] = "Privacy Policy";
 }
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+
+<form method="post" asp-action="PrivacyPost">
+    <input type="submit" value="Generate random stock" />
+</form>
+
+@foreach(var m in Model) {
+    <text>The item name <b>@m.Name</b> has @m.Stock items with the price @m.Price baht</text><br/>
+}
+
+The store worth @ViewData["Worth"] baht.

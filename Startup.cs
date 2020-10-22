@@ -12,6 +12,8 @@ using aspnetcore_backgroundservice.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Channels;
+using aspnetcore_backgroundservice.Models;
 
 namespace aspnetcore_backgroundservice
 {
@@ -33,7 +35,13 @@ namespace aspnetcore_backgroundservice
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
-           services.AddRazorPages();
+            services.AddRazorPages();
+            var channel = Channel.CreateUnbounded<UploadModel>();
+            services.AddSingleton<ChannelReader<UploadModel>>(channel.Reader);
+            services.AddSingleton<ChannelWriter<UploadModel>>(channel.Writer);
+            services.AddHostedService<UploadBackgroundService>();
+            services.AddHostedService<TimerBackgroundService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
